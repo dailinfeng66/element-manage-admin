@@ -55,6 +55,8 @@
                             password: this.param.password
                         };
                         // const res = await login(data);
+                        //todo 添加权限 等用户登录成功之后进行权限的添加
+
                         if (this.param.username === 'admin' && this.param.password === 'gouzhangtao') {
                             this.$message.success('登录成功');
                             sessionStorage.setItem('ms_username', this.param.username);

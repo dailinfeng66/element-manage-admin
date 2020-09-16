@@ -69,6 +69,7 @@
         },
         created() {
             // this.items = getTitles();
+            //获取权限
             let role = sessionStorage.getItem('user_roles');
             // let role = '002';
             // let roles = ['000', '001'];
