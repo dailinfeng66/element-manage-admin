@@ -5,17 +5,17 @@ export function getTitles() {
         icon: 'el-icon-lx-home',
         index: 'dashboard',
         title: '系统首页',
-        roles: ['000', '001']
+        roles: ['3', '2']
     },
         {
             icon: 'el-icon-lx-home',
             index: 'icon',
             title: '自定义图标',
-            roles: ['000', '001']
+            roles: ['3', '2']
         }, {
             icon: 'el-icon-lx-group',
             index: 'clubActivity',
-            title: '社团活动管理', roles: ['000', '001']
+            title: '社团活动管理', roles: ['3', '2']
         },
         {
             icon: 'el-icon-lx-searchlist',

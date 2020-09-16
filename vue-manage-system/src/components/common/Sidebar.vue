@@ -71,10 +71,6 @@
             // this.items = getTitles();
             //获取权限
             let role = sessionStorage.getItem('user_roles');
-            // let role = '002';
-            // let roles = ['000', '001'];
-            // console.log(roles.includes(role));
-            // console.log(getTitles());
             this.items = getTitles().filter(item =>
                 item.roles.includes(role)
             );

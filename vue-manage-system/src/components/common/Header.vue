@@ -29,7 +29,7 @@
                 <!--                </div>-->
                 <!-- 用户头像 -->
                 <div class="user-avator">
-                    <img src="../../assets/img/img.jpg"/>
+                    <img :src="avator"/>
                 </div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
@@ -54,13 +54,18 @@
             return {
                 collapse: false,
                 fullscreen: false,
-                name: 'linxin',
-                message: 2
+                name: '',
+                message: 2,
+                avator: ''
             };
+        },
+        created() {
+            this.name = sessionStorage.getItem('user_name');
+            this.avator = sessionStorage.getItem('user_avator');
         },
         computed: {
             username() {
-                let username = localStorage.getItem('ms_username');
+                let username = sessionStorage.getItem('user_name');
                 return username ? username : this.name;
             }
         },
@@ -68,7 +73,7 @@
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if (command == 'loginout') {
-                    localStorage.removeItem('ms_username');
+                    sessionStorage.removeItem('user_name');
                     this.$router.push('/login');
                 }
             },

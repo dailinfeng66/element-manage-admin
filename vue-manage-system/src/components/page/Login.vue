@@ -30,7 +30,7 @@
 <script>
     import {
         login
-    } from '../../api/viewpager';
+    } from '../../api/login';
 
     export default {
         data: function() {
@@ -46,35 +46,27 @@
             };
         },
         methods: {
-            submitForm() {
-                this.$refs.login.validate(async valid => {
-                    if (valid) {
-                        console.log();
-                        let data = {
-                            username: this.param.username,
-                            password: this.param.password
-                        };
-                        // const res = await login(data);
-                        //todo 添加权限 等用户登录成功之后进行权限的添加
+            async submitForm() {
+                let data = {
+                    phone: this.param.username,
+                    password: this.param.password
+                };
+                const res = await login(data);
+                //todo 添加权限 等用户登录成功之后进行权限的添加
+                console.log(res);
+                if (res.msg === '成功') {
+                    this.$message.success('登录成功');
+                    let role = res.data.list[0].type;
+                    console.log(role);
+                    let phone = res.data.list[0].phone;
+                    let picture = res.data.list[0].picture;
 
-                        if (this.param.username === 'admin' && this.param.password === 'gouzhangtao') {
-                            this.$message.success('登录成功');
-                            sessionStorage.setItem('ms_username', this.param.username);
-                            this.$router.push('/');
-                        }
-                        //判断res
-                        if (res.data.code) {
-
-                        } else {
-                            alert('憨逼输错密码了');
-                        }
-
-                    } else {
-                        this.$message.error('请输入账号和密码');
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+                    sessionStorage.setItem('ms_username', phone);
+                    sessionStorage.setItem('user_roles', role.toString());
+                    sessionStorage.setItem('user_avator', picture);
+                    sessionStorage.setItem('user_name', res.data.list[0].username);
+                    this.$router.push('/');
+                }
             }
         }
     };
