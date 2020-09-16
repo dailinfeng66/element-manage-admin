@@ -9,7 +9,9 @@ import './assets/css/theme-green/index.css'; // 浅绿色主题
 import './assets/css/icon.css';
 // import './components/common/directives';
 import 'babel-polyfill';
+import { alert } from './utils/common';
 
+Vue.prototype.$alert_res = alert;
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {

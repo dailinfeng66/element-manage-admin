@@ -146,7 +146,6 @@
     import SingleImage from '../../../common/components/SingleImage';
     import Pagination from '../../../common/components/Pagination';
     import { findAll, addMessage, updateMessage, deleteMessage, ableShop, disableShop } from '../../../../api/business';
-    import { ableViewpager, disAbleViewpager } from '../../../../api/viewpager';
 
     export default {
         name: 'business',

@@ -12,36 +12,16 @@ export function getTitles() {
             index: 'icon',
             title: '自定义图标',
             roles: ['3', '2']
-        }, {
-            icon: 'el-icon-lx-group',
-            index: 'clubActivity',
-            title: '社团活动管理', roles: ['3', '2']
-        },
-        {
-            icon: 'el-icon-lx-searchlist',
-            index: 'info',
-            title: '校园百科管理', roles: ['000', '001']
-        },
-
-        {
-            icon: 'el-icon-lx-read',
-            index: 'viewpager',
-            title: '轮播图', roles: ['000', '001']
-        },
-        {
-            icon: 'el-icon-lx-location',
-            index: 'school',
-            title: '学校管理', roles: ['000', '001']
-        },
-        {
-            icon: 'el-icon-lx-friend',
-            index: 'user',
-            title: '用户展示', roles: ['000', '001']
         },
         {
             icon: 'el-icon-lx-shop',
             index: 'business',
-            title: '优质服务管理', roles: ['000', '001']
+            title: '优质服务管理', roles: ['30', '20']
+        },
+        {
+            icon: 'el-icon-lx-people',
+            index: 'user',
+            title: '用户管理', roles: ['3']
         }
     ];
 }

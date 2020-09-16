@@ -1,11 +1,9 @@
 <template>
     <div class="club-activity">
-        <!-- <div class="filter-container">
-            <el-input style="width: inherit" v-model="listQuery.schoolId" placeholder="请输入学校ID"></el-input>
-            <el-input style="width: inherit" v-model="listQuery.title" placeholder="请输入标题  还没写"></el-input>
+        <div class="filter-container">
+            <el-input style="width: inherit" v-model="listQuery.username" placeholder="请输入用户名字"></el-input>
             <el-button type="primary" @click="findAll(listQuery)" plain>搜索</el-button>
-            <el-button type="primary" @click="addActivity" plain>添加</el-button>
-        </div>-->
+        </div>
         <!-- 以下是表格内容 -->
         <el-table
                 v-loading="listLoading"
@@ -15,44 +13,84 @@
                 highlight-current-row
                 style="width: 100%;"
         >
-            <el-table-column label="openId" align="center">
+            <el-table-column label="id" align="center">
                 <template slot-scope="{ row }">
-                    <span>{{row.openId}}</span>
+                    <span>{{row.id}}</span>
                 </template>
             </el-table-column>
-
-            <el-table-column label="用户名" class-name="status-col">
-                <template slot-scope="{ row }">
-                    <span>{{ row.userName}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="image" label="图片" align="center" width="375px">
+            <el-table-column prop="image" label="头像" align="center" width="375px">
                 <!-- 图片的显示 -->
-                <template slot-scope="{ row }">
-                    <img :src="row.avatar" width="80%" height="170px"/>
+                <template slot-scope="scope">
+                    <img :src="scope.row.picture" width="100%" height="170px"/>
                 </template>
             </el-table-column>
-            <el-table-column label="上一次登录时间" class-name="status-col">
+            <el-table-column label="类型" align="center">
                 <template slot-scope="{ row }">
-                    <span>{{ row.lastLoginTime}}</span>
+                    <span>{{row.type}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="状态" class-name="status-col">
+            <el-table-column label="电话" align="center">
                 <template slot-scope="{ row }">
-                    <span>{{ row.state}}</span>
+                    <span>{{row.phone}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="等级" class-name="status-col">
+            <el-table-column label="用户名" align="center">
                 <template slot-scope="{ row }">
-                    <span>{{ row.grade}}</span>
+                    <span>{{row.username}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="消息数量" class-name="status-col">
-                <template slot-scope="{ row }">
-                    <span>{{ row.messageCount}}</span>
+            <el-table-column
+                    label="操作"
+                    align="center"
+                    class-name="small-padding fixed-width"
+                    width="210%"
+            >
+                <!-- 右边按钮区域 -->
+                <template slot-scope="scope">
+                    <el-button type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
+        <el-dialog :title="handleType" :visible.sync="dialogFormVisible" @close="closeDialog()">
+            <el-form
+                    ref="dataForm"
+                    label-position="left"
+                    label-width="150px"
+                    style="width:90%; margin-left:50px;"
+            >
+                <el-form-item label="id">
+                    <el-input style="width:100%" disabled v-model="temp.id"></el-input>
+                </el-form-item>
+                <el-form-item label="用户名">
+                    <el-input style="width:100%" v-model="temp.username"></el-input>
+                </el-form-item>
+                <el-form-item label="图片">
+                    <SingleImage
+                            style="width:100%"
+                            v-bind:limit="1"
+                            listType="picture"
+                            ref="singleimg"
+                            @uploadSuccess="uploadSuccess"
+                    />
+                    <!--
+                    @error="error"-->
+                </el-form-item>
+                <el-form-item label="密码">
+                    <el-input style="width:100%" v-model="temp.password"></el-input>
+                </el-form-item>
+                <el-form-item label="电话">
+                    <el-input style="width:100%" v-model="temp.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="用户类型">
+                    <textarea style="width:100%" v-model="temp.type"></textarea>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取消</el-button>
+                <el-button type="primary" @click="comfirm(handleType)">确定</el-button>
+            </div>
+        </el-dialog>
         <!-- 分页组件 -->
         <Pagination
                 v-show="total > 0"
@@ -65,9 +103,8 @@
 </template>
 
 <script>
-    import SingleImage from '../../../common/components/SingleImage';
     import Pagination from '../../../common/components/Pagination';
-    import { findAll } from '../../../../api/user';
+    import { info, delete_user, add_user } from '../../../../api/user';
 
     export default {
         name: 'user',
@@ -80,29 +117,76 @@
                     pn: 1,
                     ps: 10
                 },
-                //dialog的类型 是添加还是修改
-                handleType: '修改',
-                dialogFormVisible: false, //dialog是否可见
-                //dialog中间变量
-                temp: {},
-                nullTemp: {}
+                dialogFormVisible: false,
+                handleType: '',//dialog 的标题
+                temp: {
+                    id: null,
+                    username: null,
+                    password: null,
+                    phone: null,
+                    type: null,
+                    picture: null
+                },
+                nullTemp: {
+                    id: null,
+                    username: null,
+                    password: null,
+                    phone: null,
+                    type: null,
+                    picture: null
+                }
+
             };
         },
         components: {
-            SingleImage,
             Pagination
         },
         created() {
             this.findAll(this.listQuery);
         },
         methods: {
-            //上传图片回调
+            //查询全部
+            async findAll(data) {
+                this.listLoading = true;
+                const res = await info(data);
+                this.list = res.data.list;
+                this.total = res.data.total;
+                this.listLoading = false;
+            },
+
+            //删除操作
+            async handleDelete(row) {
+                const res = await delete_user(row.id);
+                this.$alert_res(res, this);
+                this.findAll(this.listQuery);
+            },
+            //关闭 dialog
+            closeDialog() {
+                this.dialogFormVisible = false;
+            },
             uploadSuccess(pic) {
-                this.temp = pic;
+                this.temp.picture = pic[0];
+            },
+            //更新
+            update() {
+
+            },
+            //插入
+            insert() {
+
+            },
+            async comfirm(val) {
+                if (val === '更改') {
+                    this.update();
+                } else {
+                    this.insert();
+                }
+                this.findAll(this.listQuery);
+                this.dialogFormVisible = false;
             },
             //修改
             handleEdit(row) {
-                this.temp = row;
+                this.temp = Object.assign({}, row);
                 this.handleType = '更改';
                 this.dialogFormVisible = true;
             },
@@ -111,73 +195,13 @@
                 this.temp = Object.assign({}, this.nullTemp);
                 this.handleType = '添加';
                 this.dialogFormVisible = true;
-            },
-            //删除
-            async handleDelete(row) {
-                const res = await deleteSchool(row.schoolId);
-                if (res.code === 10000) {
-                    this.$message({
-                        type: 'info',
-                        message: '操作成功'
-                    });
-                }
-                this.findAll(this.listQuery);
-            },
-            //查找
-            async findAll(data) {
-                const res = await findAll(data);
-                let resData = res.queryResult.list;
-                resData.forEach(e => {
-                    if (e.state == 1 || e.state == '1') {
-                        e.state = '启用';
-                    } else {
-                        e.state = '禁用';
-                    }
-                });
-                this.list = resData;
-                console.log(this.list);
-                this.total = res.queryResult.total;
-                this.listLoading = false;
-            },
-            //关闭dialog
-            closeDialog() {
-                this.dialogFormVisible = false;
-                this.temp = this.nullTemp;
-            },
-            //更改
-            async update() {
-                const res = await updateSchool(this.temp);
-                if (res.code === 10000) {
-                    this.$message({
-                        type: 'info',
-                        message: '操作成功'
-                    });
-                }
-            },
-            //插入
-            async insert() {
-                const res = await addSchool(this.temp);
-                if (res.code === 10000) {
-                    this.$message({
-                        type: 'info',
-                        message: '操作成功'
-                    });
-                }
-            },
-
-            //确定提交
-            comfirm(val) {
-                if (val === '更改') {
-                    this.update();
-                } else {
-                    this.insert();
-                }
-                this.dialogFormVisible = false;
-                this.findAll(this.listQuery);
             }
+
+
         }
     };
 </script>
 
 <style scoped>
+
 </style>
