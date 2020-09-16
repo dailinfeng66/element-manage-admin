@@ -68,7 +68,16 @@
             }
         },
         created() {
-            this.items = getTitles();
+            // this.items = getTitles();
+            let role = sessionStorage.getItem('user_roles');
+            // let role = '002';
+            // let roles = ['000', '001'];
+            // console.log(roles.includes(role));
+            // console.log(getTitles());
+            this.items = getTitles().filter(item =>
+                item.roles.includes(role)
+            );
+            console.log(this.items);
             // 通过 Event Bus 进行组件间通信，来折叠侧边栏
             bus.$on('collapse', msg => {
                 this.collapse = msg;

@@ -28,12 +28,16 @@
 </template>
 
 <script>
+    import {
+        login
+    } from '../../api/viewpager';
+
     export default {
         data: function() {
             return {
                 param: {
                     username: 'admin',
-                    password: '123123'
+                    password: ''
                 },
                 rules: {
                     username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -43,13 +47,22 @@
         },
         methods: {
             submitForm() {
-                this.$refs.login.validate(valid => {
+                this.$refs.login.validate(async valid => {
                     if (valid) {
                         console.log();
+                        let data = {
+                            username: this.param.username,
+                            password: this.param.password
+                        };
+                        // const res = await login(data);
                         if (this.param.username === 'admin' && this.param.password === 'gouzhangtao') {
                             this.$message.success('登录成功');
-                            localStorage.setItem('ms_username', this.param.username);
+                            sessionStorage.setItem('ms_username', this.param.username);
                             this.$router.push('/');
+                        }
+                        //判断res
+                        if (res.data.code) {
+
                         } else {
                             alert('憨逼输错密码了');
                         }
