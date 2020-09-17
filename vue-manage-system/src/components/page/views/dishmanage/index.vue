@@ -1,7 +1,7 @@
 <template>
     <div class="club-activity">
         <div class="filter-container">
-            <el-input style="width: inherit" v-model="listQuery.name" placeholder="请输入商品名字"></el-input>
+            <el-input style="width: inherit" v-model="listQuery.type" placeholder="请输入种类名字"></el-input>
             <el-button type="primary" @click="findAll(listQuery)" plain>搜索</el-button>
             <el-button type="primary" @click="addUser" plain>添加</el-button>
         </div>
