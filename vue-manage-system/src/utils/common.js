@@ -16,3 +16,14 @@ export function alert(res, _this) {
         });
     }
 }
+
+//装换状态
+export function purse_status(status) {
+    console.log(status);
+    if (status == 1) {
+        return true;
+    } else if (status == 0) {
+        return false;
+    }
+    return null;
+}

@@ -52,19 +52,20 @@
                     password: this.param.password
                 };
                 const res = await login(data);
-                //todo 添加权限 等用户登录成功之后进行权限的添加
+
                 console.log(res);
+                this.$alert_res(res, this);
                 if (res.msg === '成功') {
-                    this.$message.success('登录成功');
+                    // this.$message.success('登录成功');
                     let role = res.data.list[0].type;
                     console.log(role);
                     let phone = res.data.list[0].phone;
                     let picture = res.data.list[0].picture;
-
                     sessionStorage.setItem('ms_username', phone);
                     sessionStorage.setItem('user_roles', role.toString());
                     sessionStorage.setItem('user_avator', picture);
                     sessionStorage.setItem('user_name', res.data.list[0].username);
+                    sessionStorage.setItem('user_id', res.data.list[0].id);
                     this.$router.push('/');
                 }
             }

@@ -37,6 +37,12 @@ export default new Router({
                     component: () =>
                         import ( /* webpackChunkName: "icon" */ '../components/page/views/user'),
                     meta: { title: '用户管理' }
+                },
+                {
+                    path: '/goodsmenu',
+                    component: () =>
+                        import ( /* webpackChunkName: "icon" */ '../components/page/views/goodsmenu'),
+                    meta: { title: '首页分类管理' }
                 }
 
             ]

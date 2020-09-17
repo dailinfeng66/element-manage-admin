@@ -25,3 +25,12 @@ export function add_user(data) {
         data: data
     });
 }
+
+//更新用户
+export function update_user(data) {
+    return request({
+        url: '/mgr/user',
+        method: 'put',
+        data: data
+    });
+}

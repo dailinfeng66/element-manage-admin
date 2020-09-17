@@ -45,7 +45,7 @@
             };
         },
         mounted() {
-            this.init();
+
         },
         methods: {
             // 上传图片之前
@@ -66,15 +66,14 @@
                 let _this = this;
                 uploadpic(form).then(res => {
                     // console.log(res);
-                    res = res.data;
-                    if (res.code === 10000) {
+                    if (res.status == 200) {
                         let url = {
                             uid: fileObj.uid,
-                            url: res.picUrl
+                            url: res.data.list[0]
                         };
-                        // console.log(res);
+                        // console.log(res.data.list[0]);
                         _this.fileMsgAndUrl.push(url);
-                        _this.fileUrlList.push(res.picUrl);
+                        _this.fileUrlList.push(res.data.list[0]);
                         // 上传成功
                         _this.$emit('uploadSuccess', _this.fileUrlList);
                     } else {
@@ -85,6 +84,7 @@
             },
             init() {
                 // this.dataObj.Authorization = getToken();
+                this.rmImages();
             },
             //文件数量超出限制
             outLimit() {
@@ -107,8 +107,9 @@
                 this.fileUrlList = [];
                 this.fileList = [];
                 this.fileUrlList = [];
-                this.$emit('uploadSuccess', []);
+                // this.$emit('uploadSuccess', []);
             }
+
         }
     };
 </script>

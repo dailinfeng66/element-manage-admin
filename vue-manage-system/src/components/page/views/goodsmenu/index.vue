@@ -1,7 +1,7 @@
 <template>
     <div class="club-activity">
         <div class="filter-container">
-            <el-input style="width: inherit" v-model="listQuery.username" placeholder="请输入用户名字"></el-input>
+            <el-input style="width: inherit" v-model="listQuery.name" placeholder="请输入商品名字"></el-input>
             <el-button type="primary" @click="findAll(listQuery)" plain>搜索</el-button>
             <el-button type="primary" @click="addUser" plain>添加</el-button>
         </div>
@@ -19,25 +19,23 @@
                     <span>{{row.id}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="image" label="头像" align="center" width="375px">
+            <el-table-column prop="image" label="图片" align="center" width="375px">
                 <!-- 图片的显示 -->
                 <template slot-scope="scope">
                     <img :src="scope.row.picture" width="100%" height="170px"/>
                 </template>
             </el-table-column>
-            <el-table-column label="类型" align="center">
+            <el-table-column label="名字" align="center">
                 <template slot-scope="{ row }">
-                    <span>{{row.type}}</span>
+                    <span>{{row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="电话" align="center">
+            <el-table-column label="状态" align="center">
                 <template slot-scope="{ row }">
-                    <span>{{row.phone}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="用户名" align="center">
-                <template slot-scope="{ row }">
-                    <span>{{row.username}}</span>
+                    <span>
+                        <el-button type="success" v-if="!row.status" @click="enableGoods(row.id)" cycle>启用</el-button>
+                        <el-button type="danger" v-if="row.status" @click="disableGoods(row.id)" cycle>禁用</el-button>
+                    </span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -63,9 +61,7 @@
                 <el-form-item label="id">
                     <el-input style="width:100%" disabled v-model="temp.id"></el-input>
                 </el-form-item>
-                <el-form-item label="用户名">
-                    <el-input style="width:100%" v-model="temp.username"></el-input>
-                </el-form-item>
+
                 <el-form-item label="图片">
                     <SingleImage
                             style="width:100%"
@@ -77,14 +73,8 @@
                     <!--
                     @error="error"-->
                 </el-form-item>
-                <el-form-item label="密码">
-                    <el-input style="width:100%" v-model="temp.password"></el-input>
-                </el-form-item>
-                <el-form-item label="电话">
-                    <el-input style="width:100%" v-model="temp.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="用户类型">
-                    <el-input style="width:100%" v-model="temp.type"></el-input>
+                <el-form-item label="名字">
+                    <el-input style="width:100%" v-model="temp.name"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -106,10 +96,18 @@
 <script>
     import SingleImage from '../../../common/components/SingleImage';
     import Pagination from '../../../common/components/Pagination';
-    import { info, delete_user, add_user, update_user } from '../../../../api/user';
+    import {
+        info,
+        enable_goods,
+        delete_goods,
+        disable_goods,
+        add_goods,
+        update_goods
+    } from '../../../../api/goodsmenu';
+    // import { purse_status } from '../../../../utils/common';
 
     export default {
-        name: 'user',
+        name: 'goodsmenu',
         data() {
             return {
                 listLoading: true, //加载旋转
@@ -123,19 +121,15 @@
                 handleType: '',//dialog 的标题
                 temp: {
                     id: null,
-                    username: null,
-                    password: null,
-                    phone: null,
-                    type: null,
-                    picture: null
+                    name: null,
+                    picture: null,
+                    status: null
                 },
                 nullTemp: {
                     id: null,
-                    username: null,
-                    password: null,
-                    phone: null,
-                    type: null,
-                    picture: null
+                    name: null,
+                    picture: null,
+                    status: null
                 }
 
             };
@@ -148,10 +142,32 @@
             this.findAll(this.listQuery);
             this.loadref();
         },
+        // filters: {
+        //     purse_status: function(value) {
+        //         if (value === 1 || value === '1') {
+        //             return true;
+        //         } else if (value === 0 || value === '0') {
+        //             return false;
+        //         }
+        //         return null;
+        //     }
+        // },
         methods: {
             async loadref() {
                 await this.$nextTick();
                 this.dialogFormVisible = false;
+            },
+            //禁用
+            async disableGoods(id) {
+                const res = await disable_goods(id);
+                this.$alert_res(res, this);
+                this.findAll(this.listQuery);
+            },
+            //启用
+            async enableGoods(id) {
+                const res = await enable_goods(id);
+                this.$alert_res(res, this);
+                this.findAll(this.listQuery);
             },
             //查询全部
             async findAll(data) {
@@ -164,7 +180,7 @@
 
             //删除操作
             async handleDelete(row) {
-                const res = await delete_user(row.id);
+                const res = await delete_goods(row.id);
                 this.$alert_res(res, this);
                 this.findAll(this.listQuery);
             },
@@ -184,14 +200,14 @@
             //更新
             async update() {
                 let params = Object.assign({}, this.temp);//把填的内容复制下来
-                const res = await update_user(params);
+                const res = await update_goods(params);
                 this.$alert_res(res, this);
                 this.findAll(this.listQuery);
             },
             //插入
             async insert() {
                 let params = Object.assign({}, this.temp);//把填的内容复制下来
-                const res = await add_user(params);
+                const res = await add_goods(params);
                 this.$alert_res(res, this);
                 this.findAll(this.listQuery);
             },
@@ -205,10 +221,9 @@
                 this.dialogFormVisible = false;
             },
             //修改
-            async handleEdit(row) {
-
+            handleEdit(row) {
                 // console.log(this.$refs.singleimg);
-                this.$refs.singleimg.rmImages();
+                // this.$refs.singleimg.rmImages();
                 this.temp = Object.assign({}, row);
                 this.handleType = '更改';
                 this.dialogFormVisible = true;
@@ -216,7 +231,7 @@
             //添加
             addActivity() {
                 this.temp = Object.assign({}, this.nullTemp);
-                this.$refs.singleimg.rmImages();
+                // this.$refs.singleimg.rmImages();
                 this.handleType = '添加';
                 this.dialogFormVisible = true;
             }

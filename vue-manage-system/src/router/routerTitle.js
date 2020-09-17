@@ -22,6 +22,11 @@ export function getTitles() {
             icon: 'el-icon-lx-people',
             index: 'user',
             title: '用户管理', roles: ['3']
+        },
+        {
+            icon: 'el-icon-lx-read',
+            index: 'goodsmenu',
+            title: '首页分类管理', roles: ['3']
         }
     ];
 }
