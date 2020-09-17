@@ -31,7 +31,7 @@ export function getTitles() {
         {
             icon: 'el-icon-lx-shopfill',
             index: 'dishmanage',
-            title: '菜品管理', roles: ['2', '3']
+            title: '菜品管理', roles: ['2']
         }
     ];
 }

@@ -25,17 +25,24 @@
                     <img :src="scope.row.picture" width="100%" height="170px"/>
                 </template>
             </el-table-column>
+            <!--            <el-table-column label="商店ID" align="center">-->
+            <!--                <template slot-scope="{ row }">-->
+            <!--                    <span>{{row.shopId}}</span>-->
+            <!--                </template>-->
+            <!--            </el-table-column>-->
             <el-table-column label="名字" align="center">
                 <template slot-scope="{ row }">
                     <span>{{row.name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="状态" align="center">
+            <el-table-column label="菜品类别" align="center">
                 <template slot-scope="{ row }">
-                    <span>
-                        <el-button type="success" v-if="!row.status" @click="enableGoods(row.id)" cycle>启用</el-button>
-                        <el-button type="danger" v-if="row.status" @click="disableGoods(row.id)" cycle>禁用</el-button>
-                    </span>
+                    <span>{{row.type}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="价格" align="center">
+                <template slot-scope="{ row }">
+                    <span>¥{{row.price}}</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -76,6 +83,12 @@
                 <el-form-item label="名字">
                     <el-input style="width:100%" v-model="temp.name"></el-input>
                 </el-form-item>
+                <el-form-item label="类别">
+                    <el-input style="width:100%" v-model="temp.type"></el-input>
+                </el-form-item>
+                <el-form-item label="价格">
+                    <el-input style="width:100%" v-model="temp.price"></el-input>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -98,12 +111,10 @@
     import Pagination from '../../../common/components/Pagination';
     import {
         info,
-        enable_goods,
-        delete_goods,
-        disable_goods,
-        add_goods,
-        update_goods
-    } from '../../../../api/goodsmenu';
+        add_dish,
+        update_dish,
+        delete_dish
+    } from '../../../../api/dishmanage';
     // import { purse_status } from '../../../../utils/common';
 
     export default {
@@ -115,21 +126,26 @@
                 total: 0, //总数
                 listQuery: {
                     pn: 1,
-                    ps: 10
+                    ps: 10,
+                    userId: sessionStorage.getItem('user_id')
                 },
                 dialogFormVisible: true,
                 handleType: '',//dialog 的标题
                 temp: {
                     id: null,
+                    shopId: null,
                     name: null,
-                    picture: null,
-                    status: null
+                    type: null,
+                    price: null,
+                    picture: null
                 },
                 nullTemp: {
                     id: null,
+                    shopId: null,
                     name: null,
-                    picture: null,
-                    status: null
+                    type: null,
+                    price: null,
+                    picture: null
                 }
 
             };
@@ -171,7 +187,7 @@
 
             //删除操作
             async handleDelete(row) {
-                const res = await delete_goods(row.id);
+                const res = await delete_dish(row.id);
                 this.$alert_res(res, this);
                 this.findAll(this.listQuery);
             },
@@ -191,14 +207,15 @@
             //更新
             async update() {
                 let params = Object.assign({}, this.temp);//把填的内容复制下来
-                const res = await update_goods(params);
+                const res = await update_dish(params);
                 this.$alert_res(res, this);
                 this.findAll(this.listQuery);
             },
             //插入
             async insert() {
                 let params = Object.assign({}, this.temp);//把填的内容复制下来
-                const res = await add_goods(params);
+                params.userId = sessionStorage.getItem('user_id');
+                const res = await add_dish(params);
                 this.$alert_res(res, this);
                 this.findAll(this.listQuery);
             },
@@ -214,7 +231,7 @@
             //修改
             handleEdit(row) {
                 // console.log(this.$refs.singleimg);
-                // this.$refs.singleimg.rmImages();
+                this.$refs.singleimg.rmImages();
                 this.temp = Object.assign({}, row);
                 this.handleType = '更改';
                 this.dialogFormVisible = true;
@@ -222,7 +239,7 @@
             //添加
             addActivity() {
                 this.temp = Object.assign({}, this.nullTemp);
-                // this.$refs.singleimg.rmImages();
+                this.$refs.singleimg.rmImages();
                 this.handleType = '添加';
                 this.dialogFormVisible = true;
             }
