@@ -43,6 +43,12 @@ export default new Router({
                     component: () =>
                         import ( /* webpackChunkName: "icon" */ '../components/page/views/goodsmenu'),
                     meta: { title: '首页分类管理' }
+                },
+                {
+                    path: '/dishmanage',
+                    component: () =>
+                        import ( /* webpackChunkName: "icon" */ '../components/page/views/dishmanage'),
+                    meta: { title: '菜品管理' }
                 }
 
             ]

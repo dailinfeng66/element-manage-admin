@@ -27,6 +27,11 @@ export function getTitles() {
             icon: 'el-icon-lx-read',
             index: 'goodsmenu',
             title: '首页分类管理', roles: ['3']
+        },
+        {
+            icon: 'el-icon-lx-shopfill',
+            index: 'dishmanage',
+            title: '菜品管理', roles: ['2', '3']
         }
     ];
 }
