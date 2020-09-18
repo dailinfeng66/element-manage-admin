@@ -58,7 +58,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-dialog :title="handleType" :visible.sync="dialogFormVisible" @close="closeDialog()">
+        <el-dialog :title="handleType" :visible="dialogFormVisible" @close="closeDialog()">
             <el-form
                     ref="dataForm"
                     label-position="left"
