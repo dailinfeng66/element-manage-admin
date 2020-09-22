@@ -11,7 +11,7 @@ export function getTitles() {
             icon: 'el-icon-lx-home',
             index: 'icon',
             title: '自定义图标',
-            roles: ['3', '2']
+            roles: ['30', '20']
         },
         {
             icon: 'el-icon-lx-shop',

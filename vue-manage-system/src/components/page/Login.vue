@@ -36,7 +36,7 @@
         data: function() {
             return {
                 param: {
-                    username: 'admin',
+                    username: '',
                     password: ''
                 },
                 rules: {
@@ -52,7 +52,6 @@
                     password: this.param.password
                 };
                 const res = await login(data);
-
                 console.log(res);
                 this.$alert_res(res, this);
                 if (res.msg === '成功') {
