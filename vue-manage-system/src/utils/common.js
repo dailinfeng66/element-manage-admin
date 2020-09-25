@@ -1,6 +1,6 @@
 //alert
 export function alert(res, _this) {
-    if (res.status == 200 || res.status == '200') {
+    if (res.status === 200 || res.status === '200') {
         _this.$notify({
             title: '成功',
             message: res.msg,
